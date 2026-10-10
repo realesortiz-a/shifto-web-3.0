@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIFT0</title>
+
+<style>
+:root {
+  --fondo: #061426;
+  --panel: #0c2039;
+  --borde: #1c4269;
+  --azul: #65caff;
+  --turquesa: #39d9df;
+  --blanco: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--fondo);
+  color: var(--blanco);
+  font-family: Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+h1 {
+  color: var(--azul);
+  font-size: 42px;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+h2, h3 {
+  color: var(--azul);
+}
+
+.subtitulo {
+  color: #d7eaff;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.paneles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.panel, .manual {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 22px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 190px;
+  resize: vertical;
+  padding: 14px;
+  background: #04101f;
+  color: white;
+  border: 1px solid #315a82;
+  border-radius: 9px;
+  font: 15px/1.5 monospace;
+}
+
+textarea:focus {
+  outline: 2px solid var(--turquesa);
+}
+
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+button {
+  background: #123b60;
+  border: 1px solid #3679a8;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #1a527e;
+}
+
+button.principal {
+  background: #087f9b;
+  border-color: var(--turquesa);
+}
+
+button.principal:hover {
+  background: #0a9ab3;
+}
+
+.manual {
+  line-height: 1.7;
+}
+
+.manual code {
+  color: var(--turquesa);
+  background: #04101f;
+  padding: 3px 6px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.aviso {
+  color: #c7d9ec;
+  font-size: 13px;
+}
+
+#estado {
+  min-height: 20px;
+  color: var(--turquesa);
+}
+
+@media (max-width: 750px) {
+  body {
+    padding: 14px;
+  }
+
+  .paneles {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 34px;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>SHIFT0</h1>
+  <p class="subtitulo">Sistema de codificación y descodificación</p>
+</header>
+
+<main>
+  <div class="paneles">
+
+    <section class="panel">
+      <h2>Codificar</h2>
+      <p>Escribe tu mensaje original:</p>
+
+      <textarea id="textoOriginal"
+        placeholder="Escribe aquí tu mensaje..."></textarea>
+
+      <div class="botones">
+        <button class="principal" onclick="codificar()">
+          Codificar
+        </button>
+        <button onclick="copiar('textoOriginal')">
+          Copiar
+        </button>
+        <button onclick="borrar('textoOriginal')">
+          Borrar
+        </button>
+      </div>
+
+      <h3>Resultado codificado</h3>
+      <textarea id="resultadoCodificado"
+        readonly placeholder="El código aparecerá aquí..."></textarea>
+
+      <div class="botones">
+        <button onclick="copiar('resultadoCodificado')">
+          Copiar código
+        </button>
+        <button onclick="borrar('resultadoCodificado')">
+          Borrar
+        </button>
+        <button onclick="enviarADescodificar()">
+          Usar para descodificar
+        </button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Descodificar</h2>
+      <p>Pega aquí un código SHIFT0:</p>
+
+      <textarea id="textoCodificado"
+        placeholder="Pega aquí el código..."></textarea>
+
+      <div class="botones">
+        <button class="principal" onclick="descodificar()">
+          Descodificar
+        </button>
+        <button onclick="copiar('textoCodificado')">
+          Copiar
+        </button>
+        <button onclick="borrar('textoCodificado')">
+          Borrar
+        </button>
+      </div>
+
+      <h3>Resultado descodificado</h3>
+      <textarea id="resultadoDescodificado"
+        readonly placeholder="El mensaje aparecerá aquí..."></textarea>
+
+      <div class="botones">
+        <button onclick="copiar('resultadoDescodificado')">
+          Copiar mensaje
+        </button>
+        <button onclick="borrar('resultadoDescodificado')">
+          Borrar
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <p id="estado" role="status" aria-live="polite"></p>
+
+  <section class="manual">
+    <h2>Manual de SHIFT0</h2>
+
+    <h3>1. ¿Cómo usar la página?</h3>
+    <ol>
+      <li>Para codificar, escribe un mensaje en el primer cuadro.</li>
+      <li>Pulsa «Codificar» para generar el código.</li>
+      <li>Pulsa «Copiar código» para copiar el resultado.</li>
+      <li>Para descodificar, pega el código en el cuadro correspondiente.</li>
+      <li>Pulsa «Descodificar» para recuperar el mensaje.</li>
+      <li>Usa «Borrar» para vaciar el cuadro que quieras.</li>
+    </ol>
+
+    <h3>2. Regla de las letras mayúsculas</h3>
+    <ol>
+      <li>Avanza una posición en el alfabeto.</li>
+      <li>Busca la posición de la letra resultante.</li>
+      <li>Suma 3 al número obtenido.</li>
+      <li>Escribe el resultado con cuatro ceros delante.</li>
+    </ol>
+    <p>Ejemplo: A pasa a B; B ocupa la posición 2;
+    2 + 3 = 5; el código es <code>00005</code>.</p>
+
+    <h3>3. Regla de las letras minúsculas</h3>
+    <p>Se aplica el mismo desplazamiento y la misma suma,
+    pero se representa el resultado con dos ceros delante
+    y dos detrás.</p>
+    <p>Ejemplos definidos: <code>00500</code> y
+    <code>00900</code>. El formato todavía requiere una
+    convención inequívoca para todos los números.</p>
+
+    <h3>4. La Ñ</h3>
+    <p>La Ñ es una letra independiente, situada después
+    de la N y antes de la O.</p>
+
+    <h3>5. Vocales acentuadas y Ü</h3>
+    <ul>
+      <li>Las vocales Á, É, Í, Ó y Ú usan el prefijo 6.</li>
+      <li>La Ü usa el prefijo especial 606.</li>
+      <li>Ejemplos definidos: Á → <code>600005</code>;
+      Ü → <code>606000022</code>.</li>
+    </ul>
+
+    <h3>6. Símbolos</h3>
+    <p>El formato es <code>80</code> + número asignado +
+    <code>08</code>.</p>
+    <ul>
+      <li>! = 1</li>
+      <li>" = 2</li>
+      <li># = 3</li>
+      <li>$ = 4</li>
+      <li>% = 5</li>
+      <li>? y ¿ = 6</li>
+      <li>/ = 7</li>
+      <li>( = 8</li>
+      <li>) = 9</li>
+      <li>= = 0</li>
+    </ul>
+    <p>Ejemplo: ! → <code>80108</code>.</p>
+
+    <h3>7. Números reales</h3>
+    <p>Los dígitos se convierten directamente en letras:
+    0=A, 1=B, 2=C, 3=D, 4=E, 5=F, 6=G, 7=H, 8=I, 9=J.</p>
+    <p>Ejemplo: <code>2026</code> → <code>CACG</code>.</p>
+    <p>Hace falta una marca especial para distinguir esos
+    números de las letras normales.</p>
+
+    <h3>8. Espacios y puntuación</h3>
+    <ul>
+      <li>Los espacios se representan con <code>|</code>.</li>
+      <li>El punto, la coma y los dos puntos se conservan.</li>
+    </ul>
+
+    <p class="aviso">
+      Importante: las reglas anteriores incluyen formatos
+      pendientes de resolver. Esta página muestra el manual,
+      pero el algoritmo completo debe validarse antes de
+      considerarse compatible con todas las reglas de SHIFT0.
+    </p>
+  </section>
+</main>
+
+<script>
+/*
+ SHIFT0
+ La interfaz está preparada.
+ No se implementa un algoritmo parcial que pueda producir
+ códigos incorrectos o perder información al descodificar.
+*/
+
+function codificar() {
+  const texto = document.getElementById("textoOriginal").value;
+
+  if (!texto) {
+    informar("Escribe un mensaje para codificar.");
+    return;
+  }
+
+  informar(
+    "El algoritmo completo de SHIFT0 debe definirse " +
+    "antes de generar un código fiable."
+  );
+}
+
+function descodificar() {
+  const codigo = document.getElementById("textoCodificado").value;
+
+  if (!codigo) {
+    informar("Pega un código para descodificar.");
+    return;
+  }
+
+  informar(
+    "El algoritmo de descodificación debe implementarse " +
+    "con las reglas definitivas de SHIFT0."
+  );
+}
+
+function enviarADescodificar() {
+  const codigo = document.getElementById("resultadoCodificado").value;
+  document.getElementById("textoCodificado").value = codigo;
+  informar("Código transferido al cuadro de descodificación.");
+}
+
+async function copiar(id) {
+  const cuadro = document.getElementById(id);
+
+  if (!cuadro.value) {
+    informar("No hay texto para copiar.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(cuadro.value);
+    informar("Texto copiado correctamente.");
+  } catch (error) {
+    cuadro.focus();
+    cuadro.select();
+
+    try {
+      const correcto = document.execCommand("copy");
+      informar(correcto
+        ? "Texto copiado correctamente."
+        : "No se pudo copiar. Selecciona y copia el texto manualmente.");
+    } catch {
+      informar("No se pudo copiar. Copia el texto manualmente.");
+    }
+  }
+}
+
+function borrar(id) {
+  document.getElementById(id).value = "";
+  informar("Cuadro limpiado.");
+}
+
+function informar(mensaje) {
+  document.getElementById("estado").textContent = mensaje;
+}
+</script>
+</body>
+</html>
